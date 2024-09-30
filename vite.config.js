@@ -1,5 +1,9 @@
 export default {
-    root: 'src/',
-    publicDir: '../static/',
+    root: 'src/',           
+    publicDir: '../static/', 
     base: './',
-}
+    build: {
+    outDir: '../dist',    
+    emptyOutDir: true,     
+    },
+}  
