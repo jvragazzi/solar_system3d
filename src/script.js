@@ -37,40 +37,32 @@ const backgroundCubemap = cubeTextureLoader.load([
 scene.background = backgroundCubemap;
 
 // add materials
-const mercuryMaterial = new THREE.MeshStandardMaterial({
-  map: mercuryTexture,
-});
-const venusMaterial = new THREE.MeshStandardMaterial({
-  map: venusTexture,
-});
-const earthMaterial = new THREE.MeshStandardMaterial({
-  map: earthTexture,
-});
-const marsMaterial = new THREE.MeshStandardMaterial({
-  map: marsTexture,
-});
-const jupiterMaterial = new THREE.MeshStandardMaterial({
-  map: jupiterTexture,
-});
-const saturnMaterial = new THREE.MeshStandardMaterial({
-  map: saturnTexture,
-});
-const uranusMaterial = new THREE.MeshStandardMaterial({
-  map: uranusTexture,
-});
-const neptuneMaterial = new THREE.MeshStandardMaterial({
-  map: neptuneTexture,
-});
-const moonMaterial = new THREE.MeshStandardMaterial({
-  map: moonTexture,
-});
+const mercuryMaterial = new THREE.MeshStandardMaterial({ map: mercuryTexture });
+const venusMaterial = new THREE.MeshStandardMaterial({ map: venusTexture });
+const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
+const marsMaterial = new THREE.MeshStandardMaterial({ map: marsTexture });
+const jupiterMaterial = new THREE.MeshStandardMaterial({ map: jupiterTexture });
+const saturnMaterial = new THREE.MeshStandardMaterial({ map: saturnTexture });
+const uranusMaterial = new THREE.MeshStandardMaterial({ map: uranusTexture });
+const neptuneMaterial = new THREE.MeshStandardMaterial({ map: neptuneTexture });
+const moonMaterial = new THREE.MeshStandardMaterial({ map: moonTexture });
+
+// Raycaster for detecting clicks
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+// HTML Element for displaying name
+const planetNameDiv = document.createElement('div');
+planetNameDiv.style.position = 'absolute';
+planetNameDiv.style.color = 'white';
+planetNameDiv.style.padding = '4px';
+planetNameDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+planetNameDiv.style.display = 'none';
+document.body.appendChild(planetNameDiv);
 
 // Sun
 const sunGeometry = new THREE.SphereGeometry(7, 32, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({
-  map: sunTexture,
-});
-
+const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 scene.add(sun);
 
@@ -79,28 +71,28 @@ const planets = [
   {
     name: "Mercury",
     radius: 1.2,
-    distance: 5,
+    distance: 8.5,
     speed: 0.02,
     material: mercuryMaterial,
     moons: [],
   },
   {
-    name: "Venus",
+    name: "Vênus",
     radius: 1.5,
-    distance: 9,
+    distance: 10,
     speed: 0.015,
     material: venusMaterial,
     moons: [],
   },
   {
-    name: "Earth",
+    name: "Terra",
     radius: 2,
-    distance: 13,
+    distance: 15,
     speed: 0.01,
     material: earthMaterial,
     moons: [
       {
-        name: "Moon",
+        name: "Lua",
         radius: 0.4,
         distance: 3,
         speed: 0.05,
@@ -109,9 +101,9 @@ const planets = [
     ],
   },
   {
-    name: "Mars",
+    name: "Marte",
     radius: 1.7,
-    distance: 18,
+    distance: 20,
     speed: 0.008,
     material: marsMaterial,
     moons: [
@@ -132,9 +124,9 @@ const planets = [
     ],
   },
   {
-    name: "Jupiter",
+    name: "Júpiter",
     radius: 4,
-    distance: 40,
+    distance: 45,
     speed: 0.005,
     material: jupiterMaterial,
     moons: [
@@ -169,9 +161,9 @@ const planets = [
     ],
   },
   {
-    name: "Saturn",
+    name: "Saturno",
     radius: 3.5,
-    distance: 55,
+    distance: 60,
     speed: 0.003,
     material: saturnMaterial,
     moons: [
@@ -191,9 +183,9 @@ const planets = [
     },
   },
   {
-    name: "Uranus",
+    name: "Urano",
     radius: 3,
-    distance: 70,
+    distance: 80,
     speed: 0.002,
     material: uranusMaterial,
     moons: [
@@ -213,9 +205,9 @@ const planets = [
     },
   },
   {
-    name: "Neptune",
+    name: "Netuno",
     radius: 3,
-    distance: 90,
+    distance: 100,
     speed: 0.001,
     material: neptuneMaterial,
     moons: [
@@ -235,6 +227,7 @@ const createPlanet = (planet) => {
   const planetGeometry = new THREE.SphereGeometry(planet.radius, 32, 32);
   const planetMesh = new THREE.Mesh(planetGeometry, planet.material);
   planetMesh.position.x = planet.distance;
+  planetMesh.userData.name = planet.name;
 
   // Create rings if the planet has them
   if (planet.rings) {
@@ -261,6 +254,7 @@ const createMoon = (moon) => {
   const moonGeometry = new THREE.SphereGeometry(moon.radius, 32, 32);
   const moonMesh = new THREE.Mesh(moonGeometry, moon.material || moonMaterial);
   moonMesh.position.x = moon.distance;
+  moonMesh.userData.name = moon.name;
   return moonMesh;
 };
 
@@ -283,7 +277,7 @@ const planetMeshes = planets.map((planet) => {
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 1.5);
+const pointLight = new THREE.PointLight(0xffffff, 2);
 pointLight.position.set(0, 0, 0);
 scene.add(pointLight);
 
@@ -294,7 +288,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   3000
 );
-camera.position.z = 170; 
+camera.position.z = 250; 
 camera.position.y = 45; 
 
 // Renderer
@@ -314,6 +308,33 @@ window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Handle click events
+window.addEventListener('click', (event) => {
+  // Convert screen coordinates to normalized device coordinates
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+  // Update the raycaster with the camera and mouse position
+  raycaster.setFromCamera(mouse, camera);
+
+  // Calculate objects intersected by the raycaster
+  const intersects = raycaster.intersectObjects(scene.children, true);
+
+  if (intersects.length > 0) {
+    const intersected = intersects[0].object;
+    const name = intersected.userData.name;
+
+    if (name) {
+      planetNameDiv.innerText = name;
+      planetNameDiv.style.display = 'block';
+      planetNameDiv.style.left = `${event.clientX + 10}px`;
+      planetNameDiv.style.top = `${event.clientY + 10}px`;
+    }
+  } else {
+    planetNameDiv.style.display = 'none';
+  }
 });
 
 // Render loop
