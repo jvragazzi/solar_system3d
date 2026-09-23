@@ -1,12 +1,47 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Starter</title>
-        <link rel="stylesheet" href="./style.css">
-	</head>
-	<body>
-        <canvas class="threejs"></canvas>
-        <script type="module" src="./script.js"></script>
-	</body>
-</html> 
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050816" />
+    <meta name="description" content="Explore o Sistema Solar em uma experiência 3D educativa e interativa." />
+    <title>Atlas Solar — Explore o Sistema Solar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#planet-panel">Pular para as informações</a>
+    <canvas class="threejs" aria-label="Representação interativa do Sistema Solar"></canvas>
+    <div class="space-vignette" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Atlas Solar, início"><span class="brand-mark" aria-hidden="true"><span></span></span><span>Atlas <strong>Solar</strong></span></a>
+      <p class="mission-label"><span></span> Missão: conhecer nossa vizinhança cósmica</p>
+      <button class="icon-button" id="help-button" type="button" aria-label="Como explorar" title="Como explorar">?</button>
+    </header>
+    <main>
+      <section class="hero-copy" id="hero-copy" aria-labelledby="hero-title">
+        <p class="eyebrow">Uma jornada pelo espaço</p>
+        <h1 id="hero-title">O universo começa<br /><em>bem aqui.</em></h1>
+        <p>Escolha um planeta, viaje até ele e descubra o que torna cada mundo único.</p>
+        <button class="primary-button" id="start-button" type="button">Começar pela Terra <span aria-hidden="true">→</span></button>
+      </section>
+      <aside class="planet-panel" id="planet-panel" aria-live="polite" aria-hidden="true">
+        <div class="panel-accent"></div>
+        <div class="panel-header"><div><p class="eyebrow" id="planet-order">Planeta 03</p><h2 id="planet-name">Terra</h2><p class="planet-type" id="planet-type">Planeta rochoso</p></div><button class="icon-button close-button" id="close-panel" type="button" aria-label="Fechar informações">×</button></div>
+        <p class="planet-summary" id="planet-summary"></p>
+        <div class="facts-grid" id="planet-facts"></div>
+        <div class="comparison-card"><span class="comparison-icon" aria-hidden="true">⊕</span><div><p>Compare com a Terra</p><strong id="planet-comparison"></strong></div></div>
+        <details class="more-details" id="more-details"><summary>Quero saber mais <span aria-hidden="true">+</span></summary><div class="details-body"><p id="planet-details"></p><h3>Você sabia?</h3><p id="planet-curiosity"></p></div></details>
+        <button class="quiz-button" id="quiz-button" type="button"><span aria-hidden="true">✦</span> Testar meus conhecimentos</button>
+      </aside>
+      <div class="tooltip" id="tooltip" role="status"></div>
+      <section class="explorer-help modal" id="explorer-help" aria-hidden="true" aria-labelledby="help-title"><div class="help-card modal-card"><button class="icon-button modal-close" id="close-help" type="button" aria-label="Fechar ajuda">×</button><p class="eyebrow">Controles da missão</p><h2 id="help-title">Como explorar</h2><div class="help-grid"><div><span>☸</span><strong>Gire</strong><p>Arraste o espaço para mudar o ponto de vista.</p></div><div><span>⊕</span><strong>Aproxime</strong><p>Use a roda do mouse ou o gesto de pinça.</p></div><div><span>✦</span><strong>Descubra</strong><p>Selecione um planeta para viajar até ele.</p></div></div></div></section>
+      <section class="quiz-modal modal" id="quiz-modal" aria-hidden="true" aria-labelledby="quiz-title"><div class="quiz-card modal-card"><button class="icon-button modal-close" id="close-quiz" type="button" aria-label="Fechar quiz">×</button><p class="eyebrow">Desafio rápido</p><h2 id="quiz-title"></h2><p class="quiz-question" id="quiz-question"></p><div class="quiz-options" id="quiz-options"></div><p class="quiz-feedback" id="quiz-feedback" role="status"></p></div></section>
+    </main>
+    <nav class="planet-dock" aria-label="Escolha um planeta"><button class="dock-arrow" id="previous-planet" type="button" aria-label="Planeta anterior">‹</button><div class="planet-list" id="planet-list"></div><button class="dock-arrow" id="next-planet" type="button" aria-label="Próximo planeta">›</button></nav>
+    <div class="orbit-controls" aria-label="Controles da simulação"><button id="toggle-orbits" type="button" aria-pressed="false"><span aria-hidden="true">‖</span> Pausar órbitas</button><label for="speed-control">Velocidade</label><input id="speed-control" type="range" min="0.25" max="2" value="1" step="0.25" aria-label="Velocidade das órbitas" /></div>
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>
