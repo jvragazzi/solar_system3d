@@ -9,19 +9,19 @@
 }
 
 * { box-sizing: border-box; }
-html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #03050d; color: var(--ink); }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; background: #03050d; color: var(--ink); -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
 body { min-width: 320px; }
 button, input { font: inherit; }
 button { color: inherit; }
 button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid #8ec5ff; outline-offset: 3px; }
 
-.threejs { position: fixed; inset: 0; width: 100%; height: 100%; cursor: grab; }
+.threejs { position: fixed; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
 .threejs:active { cursor: grabbing; }
 .space-vignette { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at 55% 45%, transparent 25%, rgba(1,3,10,.25) 70%, rgba(1,2,8,.82) 115%); }
 .skip-link { position: fixed; z-index: 30; top: -60px; left: 20px; padding: 10px 16px; color: #07101f; background: white; border-radius: 8px; transition: top .2s; }
 .skip-link:focus { top: 16px; }
 
-.topbar { position: fixed; z-index: 8; inset: 0 0 auto; height: 82px; display: flex; align-items: center; justify-content: space-between; padding: 0 4vw; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, rgba(3,5,13,.85), transparent); }
+.topbar { position: fixed; z-index: 8; inset: 0 0 auto; height: calc(82px + env(safe-area-inset-top)); display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top) calc(4vw + env(safe-area-inset-right)) 0 calc(4vw + env(safe-area-inset-left)); border-bottom: 1px solid var(--line); background: linear-gradient(180deg, rgba(3,5,13,.85), transparent); }
 .brand { display: flex; align-items: center; gap: 11px; color: white; text-decoration: none; font: 500 18px "Space Grotesk", sans-serif; letter-spacing: -.02em; }
 .brand strong { color: #8ebcff; }
 .brand-mark { position: relative; width: 29px; height: 29px; border: 1px solid #78adff; border-radius: 50%; transform: rotate(-28deg); }
@@ -30,7 +30,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .mission-label { display: flex; align-items: center; gap: 9px; margin: 0; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .14em; }
 .mission-label span { width: 6px; height: 6px; border-radius: 50%; background: #68d7a3; box-shadow: 0 0 10px #68d7a3; }
 .icon-button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; background: rgba(255,255,255,.06); cursor: pointer; transition: background .2s, border-color .2s, transform .2s; }
-.icon-button:hover { background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.28); transform: scale(1.05); }
+@media (hover: hover) { .icon-button:hover { background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.28); transform: scale(1.05); } }
 
 .hero-copy { position: fixed; z-index: 5; top: 50%; left: 6vw; width: min(480px, 42vw); transform: translateY(-48%); transition: opacity .45s, transform .6s, visibility .45s; }
 .hero-copy.is-hidden { opacity: 0; visibility: hidden; transform: translate(-30px, -48%); }
@@ -40,10 +40,15 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .hero-copy > p:not(.eyebrow) { max-width: 420px; margin: 24px 0 30px; color: #bdc5d6; font-size: 16px; line-height: 1.65; }
 .primary-button, .quiz-button { border: 0; border-radius: 999px; background: #f7f9ff; color: #080c17; padding: 13px 18px 13px 22px; font-weight: 700; cursor: pointer; transition: transform .2s, box-shadow .2s; }
 .primary-button span { display: inline-grid; place-items: center; width: 29px; height: 29px; margin-left: 10px; border-radius: 50%; background: #11182a; color: white; }
-.primary-button:hover, .quiz-button:hover { transform: translateY(-2px); box-shadow: 0 10px 35px rgba(105,169,255,.24); }
+@media (hover: hover) { .primary-button:hover, .quiz-button:hover { transform: translateY(-2px); box-shadow: 0 10px 35px rgba(105,169,255,.24); } }
 
 .planet-panel { --planet-color: var(--accent); position: fixed; z-index: 7; top: 98px; right: 3vw; bottom: 122px; width: min(390px, 34vw); padding: 30px; overflow-y: auto; border: 1px solid var(--line); border-radius: 22px; background: var(--glass); box-shadow: 0 24px 70px rgba(0,0,0,.36); backdrop-filter: blur(22px); opacity: 0; visibility: hidden; transform: translateX(35px); transition: opacity .35s, transform .45s, visibility .35s; scrollbar-width: thin; }
 .planet-panel.is-open { opacity: 1; visibility: visible; transform: translateX(0); }
+.planet-panel.swipe-next > :not(.sheet-handle) { animation: swipe-in-next .32s ease-out; }
+.planet-panel.swipe-previous > :not(.sheet-handle) { animation: swipe-in-previous .32s ease-out; }
+@keyframes swipe-in-next { from { opacity: 0; transform: translateX(28px); } }
+@keyframes swipe-in-previous { from { opacity: 0; transform: translateX(-28px); } }
+.sheet-handle, .sheet-toggle, .swipe-hint { display: none; }
 .panel-accent { width: 42px; height: 3px; margin-bottom: 25px; border-radius: 3px; background: var(--planet-color); box-shadow: 0 0 16px var(--planet-color); }
 .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
 .panel-header h2 { margin: -5px 0 4px; font: 600 42px/1 "Space Grotesk", sans-serif; letter-spacing: -.045em; }
@@ -68,24 +73,26 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .details-body p { margin: 0; }
 .quiz-button { width: 100%; margin-top: 17px; padding: 13px; background: var(--planet-color); color: #07101d; font-size: 12px; }
 
-.planet-dock { position: fixed; z-index: 8; bottom: 24px; left: 50%; display: flex; align-items: center; width: min(850px, 74vw); height: 82px; padding: 0 11px; border: 1px solid var(--line); border-radius: 18px; background: rgba(8,12,27,.78); backdrop-filter: blur(20px); transform: translateX(-50%); }
+.bottom-bar { position: fixed; z-index: 8; left: calc(3vw + env(safe-area-inset-left)); right: calc(3vw + env(safe-area-inset-right)); bottom: calc(24px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr minmax(0, 850px) 1fr; align-items: center; gap: 20px; pointer-events: none; }
+.bottom-bar > * { pointer-events: auto; }
+.planet-dock { grid-row: 1; grid-column: 2; display: flex; align-items: center; min-width: 0; height: 82px; padding: 0 11px; border: 1px solid var(--line); border-radius: 18px; background: rgba(8,12,27,.78); backdrop-filter: blur(20px); }
 .planet-list { display: flex; align-items: stretch; flex: 1; height: 100%; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
 .planet-list::-webkit-scrollbar { display: none; }
 .planet-option { position: relative; display: flex; flex: 1 0 84px; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-width: 76px; border: 0; background: transparent; color: #8490a5; font-size: 10px; cursor: pointer; transition: color .2s, background .2s; }
-.planet-option:hover { color: white; background: rgba(255,255,255,.035); }
+@media (hover: hover) { .planet-option:hover { color: white; background: rgba(255,255,255,.035); } }
 .planet-option.is-active { color: white; }
 .planet-option.is-active::after { content: ""; position: absolute; bottom: 0; left: 18%; right: 18%; height: 2px; background: var(--dot-color); box-shadow: 0 0 12px var(--dot-color); }
 .planet-dot { width: var(--dot-size); height: var(--dot-size); min-width: 8px; min-height: 8px; max-width: 22px; max-height: 22px; border-radius: 50%; background: var(--dot-color); box-shadow: inset -4px -2px 7px rgba(0,0,0,.48), 0 0 10px color-mix(in srgb, var(--dot-color) 40%, transparent); }
 .dock-arrow { width: 35px; height: 45px; border: 0; background: transparent; color: #9da8ba; font-size: 25px; cursor: pointer; }
-.orbit-controls { position: fixed; z-index: 6; left: 3vw; bottom: 46px; display: flex; align-items: center; gap: 12px; color: #7f8ba1; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
-.orbit-controls button { border: 0; background: transparent; color: #aab4c6; cursor: pointer; font-size: 11px; }
+.orbit-controls { grid-row: 1; grid-column: 1; justify-self: start; display: flex; align-items: center; gap: 12px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: rgba(8,12,27,.6); backdrop-filter: blur(14px); color: #7f8ba1; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; }
+.orbit-controls button { min-height: 28px; padding: 0; border: 0; background: transparent; color: #aab4c6; cursor: pointer; font-size: 11px; white-space: nowrap; }
 .orbit-controls input { width: 70px; accent-color: #7eaff8; }
 
 .tooltip { position: fixed; z-index: 10; pointer-events: none; opacity: 0; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; background: rgba(6,9,20,.9); font-size: 11px; transition: opacity .15s; }
 .tooltip.is-visible { opacity: 1; }
-.modal { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(1,3,10,.72); backdrop-filter: blur(12px); opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; }
+.modal { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); background: rgba(1,3,10,.72); backdrop-filter: blur(12px); opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; }
 .modal.is-open { opacity: 1; visibility: visible; }
-.modal-card { position: relative; width: min(560px, 94vw); padding: 34px; border: 1px solid var(--line); border-radius: 22px; background: #0a1021; box-shadow: 0 30px 90px rgba(0,0,0,.5); }
+.modal-card { position: relative; width: min(560px, 94vw); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; padding: 34px; border: 1px solid var(--line); border-radius: 22px; background: #0a1021; box-shadow: 0 30px 90px rgba(0,0,0,.5); }
 .modal-card h2 { margin: 0 0 22px; font: 600 34px "Space Grotesk", sans-serif; }
 .modal-close { position: absolute; top: 20px; right: 20px; }
 .help-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -96,31 +103,82 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .quiz-question { color: #d3d9e6; font-size: 15px; line-height: 1.5; }
 .quiz-options { display: grid; gap: 9px; margin-top: 20px; }
 .quiz-options button { padding: 13px 15px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255,255,255,.04); text-align: left; cursor: pointer; transition: border-color .2s, background .2s; }
-.quiz-options button:hover { border-color: #75aefb; background: rgba(117,174,251,.1); }
+@media (hover: hover) { .quiz-options button:hover { border-color: #75aefb; background: rgba(117,174,251,.1); } }
 .quiz-options button.correct { border-color: #62d49a; background: rgba(98,212,154,.14); }
 .quiz-options button.wrong { border-color: #ff707c; background: rgba(255,112,124,.12); }
 .quiz-feedback { min-height: 42px; margin-bottom: 0; color: #aeb8cb; font-size: 12px; line-height: 1.5; }
 
 @media (max-width: 1050px) {
-  .planet-dock { width: min(690px, 68vw); }
-  .orbit-controls { display: none; }
-  .planet-panel { width: min(370px, 42vw); }
+  .bottom-bar { grid-template-columns: minmax(0, 690px); justify-content: center; gap: 10px; }
+  .orbit-controls { grid-column: 1; justify-self: center; }
+  .planet-dock { grid-row: 2; grid-column: 1; }
+  .planet-panel { bottom: calc(160px + env(safe-area-inset-bottom)); width: min(370px, 42vw); }
 }
 
 @media (max-width: 760px) {
-  .topbar { height: 64px; padding: 0 18px; }
+  .topbar { height: calc(64px + env(safe-area-inset-top)); padding-left: calc(18px + env(safe-area-inset-left)); padding-right: calc(18px + env(safe-area-inset-right)); }
+  .icon-button { width: 40px; height: 40px; }
   .mission-label { display: none; }
-  .hero-copy { top: 112px; left: 24px; width: calc(100vw - 48px); transform: none; }
-  .hero-copy.is-hidden { transform: translateY(-20px); }
-  .hero-copy h1 { font-size: clamp(40px, 12vw, 58px); }
-  .hero-copy > p:not(.eyebrow) { max-width: 330px; margin: 18px 0 24px; font-size: 14px; }
-  .planet-panel { top: auto; right: 10px; bottom: 98px; left: 10px; width: auto; max-height: 57vh; padding: 22px; border-radius: 18px; transform: translateY(30px); }
-  .planet-panel.is-open { transform: translateY(0); }
-  .panel-header h2 { font-size: 34px; }
-  .planet-dock { bottom: 10px; width: calc(100vw - 20px); height: 72px; border-radius: 15px; }
-  .planet-option { flex-basis: 74px; min-width: 68px; }
+  .hero-copy { top: auto; bottom: calc(150px + env(safe-area-inset-bottom)); left: 24px; width: calc(100vw - 48px); transform: none; }
+  .hero-copy.is-hidden { transform: translateY(20px); }
+  .hero-copy h1 { font-size: clamp(38px, 11vw, 54px); }
+  .hero-copy > p:not(.eyebrow) { max-width: 330px; margin: 14px 0 20px; font-size: 14px; }
+  .bottom-bar { left: calc(10px + env(safe-area-inset-left)); right: calc(10px + env(safe-area-inset-right)); bottom: calc(10px + env(safe-area-inset-bottom)); grid-template-columns: minmax(0, 1fr); }
+  .has-selection .orbit-controls { display: none; }
+  .planet-dock { height: 72px; padding: 0 4px; border-radius: 15px; }
+  .dock-arrow { width: 40px; height: 56px; }
+  .planet-option { flex-basis: 74px; min-width: 68px; font-size: 11px; }
+  .details-body { font-size: 13px; }
+  .quiz-options button { min-height: 48px; }
   .help-grid { grid-template-columns: 1fr; }
+  .help-grid > div { display: grid; grid-template-columns: 36px 1fr; column-gap: 12px; padding: 14px; }
+  .help-grid span { grid-row: span 2; margin: 0; }
+  .help-grid p { margin-top: 3px; }
   .modal-card { padding: 28px 22px; }
+  .modal-card h2 { font-size: 28px; padding-right: 44px; }
+}
+
+/* Celular em pé: o painel vira uma bottom sheet que abre recolhida para o planeta continuar visível. */
+@media (max-width: 760px) and (min-height: 521px) {
+  .planet-panel { top: auto; right: calc(10px + env(safe-area-inset-right)); bottom: calc(92px + env(safe-area-inset-bottom)); left: calc(10px + env(safe-area-inset-left)); width: auto; max-height: calc(100dvh - 176px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: 8px 20px 18px; border-radius: 20px; overscroll-behavior: contain; transform: translateY(30px); }
+  .planet-panel.is-open { transform: translateY(0); }
+  .planet-panel { touch-action: pan-y; }
+  .planet-panel:not(.is-expanded) { overflow: hidden; }
+  .planet-panel:not(.is-expanded) :is(.facts-grid, .comparison-card, .more-details, .quiz-button) { display: none; }
+  .planet-panel:not(.is-expanded) .planet-summary { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .sheet-handle { display: block; width: 100%; height: 22px; margin: 0 0 6px; padding: 0; border: 0; background: transparent; cursor: pointer; touch-action: none; }
+  .sheet-handle span { display: block; width: 40px; height: 4px; margin: 0 auto; border-radius: 4px; background: rgba(255,255,255,.28); }
+  .swipe-hint { display: block; margin: 10px 0 0; color: #6f7a8f; font-size: 11px; text-align: center; }
+  .is-expanded .swipe-hint { display: none; }
+  .panel-accent { display: none; }
+  .panel-header h2 { margin: 0 0 3px; font-size: 30px; }
+  .planet-summary { margin: 14px 0; }
+  .sheet-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; border: 1px solid color-mix(in srgb, var(--planet-color) 45%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--planet-color) 12%, transparent); cursor: pointer; font-size: 13px; font-weight: 600; }
+  .sheet-toggle span { transition: transform .2s; }
+  .is-expanded .sheet-toggle { margin-bottom: 16px; }
+  .is-expanded .sheet-toggle span { transform: rotate(180deg); }
+}
+
+/* Celular deitado: pouca altura, então o painel vai para a lateral e o dock divide a largura. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .topbar { height: calc(52px + env(safe-area-inset-top)); }
+  .mission-label { display: none; }
+  .hero-copy { top: calc(64px + env(safe-area-inset-top)); bottom: auto; left: calc(24px + env(safe-area-inset-left)); width: min(400px, 48vw); transform: none; }
+  .hero-copy.is-hidden { transform: translateX(-20px); }
+  .hero-copy h1 { font-size: clamp(28px, 4.6vw, 40px); }
+  .hero-copy > p:not(.eyebrow) { margin: 10px 0 14px; font-size: 13px; line-height: 1.5; }
+  .eyebrow { margin-bottom: 8px; }
+  .primary-button { padding: 8px 12px 8px 18px; }
+  .bottom-bar { left: calc(10px + env(safe-area-inset-left)); right: calc(10px + env(safe-area-inset-right)); bottom: calc(8px + env(safe-area-inset-bottom)); grid-template-columns: auto minmax(0, 620px); gap: 10px; }
+  .orbit-controls { grid-row: 1; grid-column: 1; }
+  .planet-dock { grid-row: 1; grid-column: 2; height: 60px; }
+  .has-selection .bottom-bar { right: calc(min(340px, 44vw) + 20px + env(safe-area-inset-right)); grid-template-columns: minmax(0, 1fr); }
+  .has-selection .orbit-controls { display: none; }
+  .has-selection .planet-dock { grid-column: 1; }
+  .planet-panel { top: calc(60px + env(safe-area-inset-top)); right: calc(10px + env(safe-area-inset-right)); bottom: calc(8px + env(safe-area-inset-bottom)); left: auto; width: min(340px, 44vw); max-height: none; padding: 18px; border-radius: 16px; }
+  .panel-accent { margin-bottom: 12px; }
+  .panel-header h2 { font-size: 28px; }
+  .planet-summary { margin: 12px 0; font-size: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
